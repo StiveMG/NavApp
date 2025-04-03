@@ -1,37 +1,49 @@
-import React,{use, useEffect} from 'react'
-import { View, Text, StyleSheet, Image} from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import React, { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Animated } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
+import colors from '../constants/colors';
 
 export const SplashScreen = () => {
-  const navegation = useNavigation();
+  const navigation = useNavigation();
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    const timer = setTimeout(()=>{
-      navegation.replace('MainTabs')},8000)
-    return ()=> clearTimeout(timer)
-  },[navegation])
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 2000,
+      useNativeDriver: true,
+    }).start();
+
+    const timer = setTimeout(() => {
+      navigation.replace('Register');
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [navigation]);
 
   return (
-     <View style ={styles.container}>
-        <Text>Solo unos segundos</Text>
-        <Image source={require('./../../assets/splash.jpg')} style= {styles.logo}></Image>
-     </View>
-  )
-}
+    <LinearGradient colors={[colors.principal, colors.principalBlueGreen]} style={styles.container}>
+      <Animated.Text style={[styles.text, { opacity: fadeAnim }]}>Bienvenido a la App 🚀</Animated.Text>
+      <Animated.Text style={[styles.subtext, { opacity: fadeAnim }]}>Cargando...</Animated.Text>
+    </LinearGradient>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
-
-  logo: {
-    height: 200,
-    width: 200,
-    resizeMode: 'contain',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
+  text: {
+    color: colors.blanco,
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  subtext: {
+    color: colors.variantep3,
+    fontSize: 18,
+  },
 });
